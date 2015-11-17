@@ -35,12 +35,16 @@ class HuffCode:
         """
         pass
     
-    def __getDictionary (self, codeTree):
+    def __getDictionary (self, codeTree, binCode = ""):
         """
         pre: code Tree given
         post: return encode dictionary for bit sequences
         """
-        pass
+        if(codeTree.left == None or codeTree.right == None):
+            return {codeTree.char:binCode}
+        codeDict = (self.__getDictionary(codeTree.left, binCode+"0"))
+        codeDict.update(self.__getDictionary(codeTree.right, binCode+"1"))
+        return codeDict
 
     def __getBitSeq (self, string, dictionary):
         """
