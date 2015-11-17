@@ -34,10 +34,17 @@ class HuffCode:
         post: returns Tree of frequencies
         """
         pass
-
-    def __getBitSequ (self, string, codeTree):
+    
+    def __getDictionary (self, codeTree):
         """
-        pre: user's string and code Tree given
+        pre: code Tree given
+        post: return encode dictionary for bit sequences
+        """
+        pass
+
+    def __getBitSeq (self, string, dictionary):
+        """
+        pre: user's string and encode dictionary given
         post: returns bit sequence to write into file
         """
         pass
@@ -50,4 +57,3 @@ class HuffCode:
         post: write file called filename using bit sequence
         """
         pass
-
