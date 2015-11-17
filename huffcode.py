@@ -33,7 +33,32 @@ class HuffCode:
         pre: frequencies as list of type Tree given
         post: returns Tree of frequencies
         """
-        pass
+        if len(freqlist) < 2: # make sure merging is only done when there are
+                              # at least 2 elements in freqlist
+            return freqlist[0]
+        
+        t = Tree(freqlist[0].frequency + freqlist[1].frequency)
+            # add frequencies of 1st and 2nd element, the char is None
+        t.left = freqlist[0]
+        t.right = freqlist[1]
+        freqlist.remove(freqlist[0]) # remove merged elements from freqlist
+        freqlist.remove(freqlist[0])
+        
+        # insert new tree into freqlist
+        if len(freqlist) == 0: # true, if we just merged the last 2 elements
+                               # we had to merge
+            return t
+        else:
+            for el in freqlist:
+                if el.frequency > t.frequency:
+                    freqlist.insert(freqlist.index(el), t)
+                    break
+            if not t in freqlist:
+                freqlist.append(t)
+
+        # we have finished merging the first two elements of freqlist and
+        # inserting it again, so now we go into recursion
+        return self.__getCodeTree(freqlist)
     
     def __getDictionary (self, codeTree, binCode = ""):
         """
