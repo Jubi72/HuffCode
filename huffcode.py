@@ -39,17 +39,16 @@ class HuffCode:
         post: returns list of type Tree with frequency for each character in string
         """
         frequences = list()
-        frequences.append(Tree(string.count(string[0]), string[0]))
-        string = string.replace(string[0], "")
         while(string!=""):
-            char = string[0]
-            charFreq = string.count(char)
+            newTree = Tree(string.count(string[0]), string[0])
             for i in range(len(frequences)):
-                if frequences[i].frequency > charFreq:
-                    frequences.insert(i, Tree(charFreq, char))
+                if frequences[i].frequency > newTree.frequency:
+                    frequences.insert(i, newTree)
                     break
-            string = string.replace(char, "")
-        if(len(frequences) == 1):
+            if (not newTree in frequences):
+                frequences.append(newTree)
+            string = string.replace(string[0], "")
+        while(len(frequences) <= 1):
             frequences.append(Tree(1, "\0"))
         return frequences
 
@@ -210,3 +209,4 @@ class HuffCode:
                 text += dictionary[bits]
                 bits = ""
         return text
+
