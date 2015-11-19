@@ -93,10 +93,6 @@ class HuffCode:
         encodedDictionary = ""
         for char in dictionary:
             encodedDictionary += char
-            print(bin(ord(char)))
-            print(dictionary[char])
-            print("Anzahl Bytes:",'{0:05b}'.format((len(dictionary[char])+7)//8), '{0:03b}'.format((8-len(dictionary[char]))%8))
-            
             encodedDictionary += self._bitsToString('{0:05b}'.format((len(dictionary[char])+7)//8) \
                                                   + '{0:03b}'.format((8-len(dictionary[char]))%8))
             encodedDictionary += self._bitsToString(dictionary[char] + "0"*((8-len(dictionary[char]))%8))
@@ -104,7 +100,6 @@ class HuffCode:
         encodedText = ""
         for char in string:
             encodedText += dictionary[char]
-            print(encodedText)
             
         encodedDictionary += self._bitsToString("0"*(8+5) + '{0:03b}'.format(len(encodedText)%8))
         encodedText = self._bitsToString(encodedText)
