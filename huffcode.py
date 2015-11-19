@@ -71,12 +71,45 @@ class HuffCode:
         codeDict.update(self.__getDictionary(codeTree.right, binCode+"1"))
         return codeDict
 
+    """
+        pre: sring of bits given
+        post: returns the string of these Bits
+        """
+        string = ""
+        lastBits = 0
+        for i in range(len(bits)//8):
+            string += chr(int(bits[i*8:(i+1)*8], 2))
+            lastBits = (i+1)*8
+        if(bits[lastBits:] != ''):
+            string += chr(int(bits[lastBits:]+ ("0"*((8-len(bits))%8)), 2))
+        return string
+
     def __getBitSeq (self, string, dictionary):
         """
         pre: user's string and encode dictionary given
         post: returns bit sequence to write into file
         """
-        pass
+        encodedDictionary = ""
+        for char in dictionary:
+            encodedDictionary += char
+            print(bin(ord(char)))
+            print(dictionary[char])
+            print("Anzahl Bytes:",'{0:05b}'.format((len(dictionary[char])+7)//8), '{0:03b}'.format((8-len(dictionary[char]))%8))
+            
+            encodedDictionary += self._bitsToString('{0:05b}'.format((len(dictionary[char])+7)//8) \
+                                                  + '{0:03b}'.format((8-len(dictionary[char]))%8))
+            encodedDictionary += self._bitsToString(dictionary[char] + "0"*((8-len(dictionary[char]))%8))
+        
+        encodedText = ""
+        for char in string:
+            encodedText += dictionary[char]
+            print(encodedText)
+        
+            
+        print(( "0"*(8+5) + '{0:03b}'.format(len(encodedText)%8), 2))
+        encodedDictionary += self._bitsToString("0"*(8+5) + '{0:03b}'.format(len(encodedText)%8))
+        encodedText = self._bitsToString(encodedText)
+        return encodedDictionary + encodedText
 
     def __writeFile (self, bitSeq, codeTree, filename):
         """
