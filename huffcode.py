@@ -139,7 +139,7 @@ class HuffCode:
         post: write file called filename using bit sequence
         """
         f = open(filename, "wb")
-        f.write(byteSeq)
+        f.write(byteSeq.encode('UTF-8'))
         f.close()
 
 
@@ -151,7 +151,7 @@ class HuffCode:
         dictionary, bitSeq = self.__getDictionaryAndBitSeq(bytes)
         return self.__getText(bitSeq, dictionary)
 
-    def read(self, filename):
+    def read(self, filename = "code.hfc"):
         """
         pre: filename
         post: decoded content as string
@@ -163,8 +163,9 @@ class HuffCode:
         pre: filename
         post: file bytes
         """
-        pass
-
+        f = open(filename, "rb")
+        return f.read().decode('UTF-8')
+    
     def __getDictionaryAndBitSeq(self, byteSeq):
         """
         pre: byte sequence byteSeq given
@@ -210,3 +211,8 @@ class HuffCode:
                 bits = ""
         return text
 
+if __name__ == "__main__":
+    huff = HuffCode()
+    huff.write("ttttteeeeesssstttt")
+    print(huff.read())
+    
