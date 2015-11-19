@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tree import * # Funktionsnamen ueberschneiden sich nicht, da selbst definiert
 
 class HuffCode:
@@ -70,8 +71,8 @@ class HuffCode:
         codeDict = (self.__getDictionary(codeTree.left, binCode+"0"))
         codeDict.update(self.__getDictionary(codeTree.right, binCode+"1"))
         return codeDict
-        
-    def _bitsToString(self, bits):
+
+    def __bitsToString(self, bits):
         """
         pre: sring of bits given
         post: returns the string of these Bits
@@ -85,7 +86,7 @@ class HuffCode:
             string += chr(int(bits[lastBits:]+ ("0"*((8-len(bits))%8)), 2))
         return string
 
-    def __getBitSeq (self, string, dictionary):
+    def getByteSeq (self, string, dictionary):
         """
         pre: user's string and encode dictionary given
         post: returns bit sequence to write into file
@@ -93,23 +94,56 @@ class HuffCode:
         encodedDictionary = ""
         for char in dictionary:
             encodedDictionary += char
-            encodedDictionary += self._bitsToString('{0:05b}'.format((len(dictionary[char])+7)//8) \
+            encodedDictionary += self.__bitsToString('{0:05b}'.format((len(dictionary[char])+7)//8) \
                                                   + '{0:03b}'.format((8-len(dictionary[char]))%8))
-            encodedDictionary += self._bitsToString(dictionary[char] + "0"*((8-len(dictionary[char]))%8))
+            encodedDictionary += self.__bitsToString(dictionary[char] + "0"*((8-len(dictionary[char]))%8))
         
         encodedText = ""
         for char in string:
             encodedText += dictionary[char]
             
-        encodedDictionary += self._bitsToString("0"*(8+5) + '{0:03b}'.format(len(encodedText)%8))
-        encodedText = self._bitsToString(encodedText)
+        encodedDictionary += self.__bitsToString("0"*(8+5) + '{0:03b}'.format(8-len(encodedText)%8))
+        encodedText = self.__bitsToString(encodedText)
         return encodedDictionary + encodedText
 
-    def __writeFile (self, bitSeq, codeTree, filename):
+
+    def __writeFile (self, byteSeq, filename):
         """
-        pre:  bit sequence bitSeq given
+        pre:  byte sequence byteSeq given
               filename is same as in self.write
               codeTree is same as in self.__getBitSeq
         post: write file called filename using bit sequence
         """
         pass
+
+    def __getDictionaryAndText(self, byteSeq):
+        """
+        pre: byte sequence byteSeq given
+        post: dictionary and remaining byteSeq as bitsString
+        """
+        index = 0
+        dictionary = dict()
+        while(not (ord(byteSeq[index]) == 0 and (ord(byteSeq[index+1])&248) == 0)):
+            char = byteSeq[index]
+            index += 1
+            anzBits = (ord(byteSeq[index])&248) - (ord(byteSeq[index]) & 7)
+            index += 1
+            bits = ""
+            while (anzBits>8):
+                bits += '{0:08b}'.format(ord(byteSeq[index]))
+                anzBits-=8
+                index+=1
+            if(anzBits<8):
+                bits += ('{0:00'+str(anzBits)+'b}').format(ord(byteSeq[index])>>(8-anzBits))
+            index += 1
+            dictionary[char] = bits
+        index += 1
+        lastBits = ord(byteSeq[index]) & 7
+        index += 1
+        encodedBits = ""
+        for char in byteSeq[index:]:
+            encodedBits += '{0:08b}'.format(ord(char))
+        if(lastBits>0):
+            encodedBits = encodedBits[:-lastBits]
+        return dictionary, encodedBits
+
