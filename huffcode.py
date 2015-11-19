@@ -18,6 +18,8 @@ class HuffCode:
     def encode(self, text):
         text = str(text)
         freqList = self.__getFrequencies(str(text))
+        for elem in freqList:
+            print(elem.frequency, elem.char)
         codeTree = self.__getCodeTree(freqList)
         dictionary = self.__getDictionary(codeTree)
         bytes = self.__getByteSeq(text, dictionary)
@@ -43,8 +45,8 @@ class HuffCode:
             char = string[0]
             charFreq = string.count(char)
             for i in range(len(frequences)):
-                frequences[i].frequency > charFreq:
-                    freqlist.insert(i, Tree(charFreq, char)
+                if frequences[i].frequency > charFreq:
+                    frequences.insert(i, Tree(charFreq, char))
                     break
             string = string.replace(char, "")
         if(len(frequences) == 1):
@@ -208,4 +210,3 @@ class HuffCode:
                 text += dictionary[bits]
                 bits = ""
         return text
-
