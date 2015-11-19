@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from tree import * # Funktionsnamen ueberschneiden sich nicht, da selbst definiert
 
+
 class HuffCode:
     
     def __init__ (self):
@@ -14,20 +15,33 @@ class HuffCode:
         self.__bitSeq   = None # Zeichenfolge mit codierten Bits; Code für Datei
         
 
+    def encode(self, text):
+        text = str(text)
+        freqList = self.__getFrequencies(str(text))
+        codeTree = self.__getCodeTree(freqList)
+        dictionary = self.__getDictionary(codeTree)
+        bytes = self.__getByteSeq(text, dictionary)
+        return bytes
+
     def write (self, text, filename = "code.hfc"):
         """
         pre: text given
         post: write huffcode-compressed text into file called filename
               if no filename given file is called code.hfc
         """
-        pass
+        self.__writeFile(self.encode(text), filename)
 
     def __getFrequencies (self, string):
         """
         pre: string given
         post: returns list of type Tree with frequency for each character in string
         """
-        pass
+        frequences = list()
+        while(string!=""):
+            frequences.append(Tree(string.count(string[0]), string[0]))
+            string = string.replace(string[0], "")
+        return frequences
+
 
     def __getCodeTree (self, freqlist):
         """
@@ -86,7 +100,7 @@ class HuffCode:
             string += chr(int(bits[lastBits:]+ ("0"*((8-len(bits))%8)), 2))
         return string
 
-    def getByteSeq (self, string, dictionary):
+    def __getByteSeq (self, string, dictionary):
         """
         pre: user's string and encode dictionary given
         post: returns bit sequence to write into file
@@ -114,7 +128,9 @@ class HuffCode:
               codeTree is same as in self.__getBitSeq
         post: write file called filename using bit sequence
         """
-        pass
+        f = open(filename, "wb")
+        f.write(byteSeq)
+        f.close()
 
     def __getDictionaryAndText(self, byteSeq):
         """
@@ -146,4 +162,5 @@ class HuffCode:
         if(lastBits>0):
             encodedBits = encodedBits[:-lastBits]
         return dictionary, encodedBits
+
 
