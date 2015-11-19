@@ -37,9 +37,18 @@ class HuffCode:
         post: returns list of type Tree with frequency for each character in string
         """
         frequences = list()
+        frequences.append(Tree(string.count(string[0]), string[0]))
+        string = string.replace(string[0], "")
         while(string!=""):
-            frequences.append(Tree(string.count(string[0]), string[0]))
-            string = string.replace(string[0], "")
+            char = string[0]
+            charFreq = string.count(char)
+            for i in range(len(frequences)):
+                frequences[i].frequency > charFreq:
+                    freqlist.insert(i, Tree(charFreq, char)
+                    break
+            string = string.replace(char, "")
+        if(len(frequences) == 1):
+            frequences.append(Tree(1, "\0"))
         return frequences
 
 
@@ -132,7 +141,30 @@ class HuffCode:
         f.write(byteSeq)
         f.close()
 
-    def __getDictionaryAndText(self, byteSeq):
+
+    def decode(self, bytes):
+        """
+        pre: encoded bytes
+        post: decoded string
+        """
+        dictionary, bitSeq = self.__getDictionaryAndBitSeq(bytes)
+        return self.__getText(bitSeq, dictionary)
+
+    def read(self, filename):
+        """
+        pre: filename
+        post: decoded content as string
+        """
+        return self.decode(self.__readFile(filename))
+
+    def __readFile(self, filename):
+        """
+        pre: filename
+        post: file bytes
+        """
+        pass
+
+    def __getDictionaryAndBitSeq(self, byteSeq):
         """
         pre: byte sequence byteSeq given
         post: dictionary and remaining byteSeq as bitsString
@@ -152,7 +184,7 @@ class HuffCode:
             if(anzBits<8):
                 bits += ('{0:00'+str(anzBits)+'b}').format(ord(byteSeq[index])>>(8-anzBits))
             index += 1
-            dictionary[char] = bits
+            dictionary[bits] = char
         index += 1
         lastBits = ord(byteSeq[index]) & 7
         index += 1
@@ -163,4 +195,17 @@ class HuffCode:
             encodedBits = encodedBits[:-lastBits]
         return dictionary, encodedBits
 
+    def __getText(self, bitSeq, dictionary):
+        """
+        pre: dictionary and bits to decode
+        post: encoded text as string
+        """
+        text = ""
+        bits = ""
+        for bit in bitSeq:
+            bits+=bit
+            if bits in dictionary.keys():
+                text += dictionary[bits]
+                bits = ""
+        return text
 
