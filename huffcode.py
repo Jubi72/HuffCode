@@ -70,8 +70,9 @@ class HuffCode:
         codeDict = (self.__getDictionary(codeTree.left, binCode+"0"))
         codeDict.update(self.__getDictionary(codeTree.right, binCode+"1"))
         return codeDict
-
-    """
+        
+    def _bitsToString(self, bits):
+        """
         pre: sring of bits given
         post: returns the string of these Bits
         """
@@ -104,9 +105,7 @@ class HuffCode:
         for char in string:
             encodedText += dictionary[char]
             print(encodedText)
-        
             
-        print(( "0"*(8+5) + '{0:03b}'.format(len(encodedText)%8), 2))
         encodedDictionary += self._bitsToString("0"*(8+5) + '{0:03b}'.format(len(encodedText)%8))
         encodedText = self._bitsToString(encodedText)
         return encodedDictionary + encodedText
