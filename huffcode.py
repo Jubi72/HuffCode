@@ -138,8 +138,8 @@ class HuffCode:
               codeTree is same as in self.__getBitSeq
         post: write file called filename using bit sequence
         """
-        f = open(filename, "wb")
-        f.write(byteSeq.encode('UTF-8'))
+        f = open(filename, "w")
+        f.write(byteSeq)
         f.close()
 
 
@@ -163,8 +163,8 @@ class HuffCode:
         pre: filename
         post: file bytes
         """
-        f = open(filename, "rb")
-        return f.read().decode('UTF-8')
+        f = open(filename, "r")
+        return f.read()
     
     def __getDictionaryAndBitSeq(self, byteSeq):
         """
