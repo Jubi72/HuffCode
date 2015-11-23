@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
-from Tkinter import *
+import sys
+if int(sys.version[0]) < 3: import Tkinter as tk # Python2: Tkinter
+else: import tkinter as tk                       # neuer:   tkinter
 from huffcode import *
 
 class Gui:
 
     def __init__ (self):
-        self.root = Tk()
+        self.root = tk.Tk()
         self.root.title ("HuffCode")
         self.root.config (bg = "yellow")
+        self.root.geometry ("200x50")
         
-        Label(self.root, text="Text", bg="yellow").grid(row=0, column=0)
-        Label(self.root, text="Dateiname", bg="yellow").grid(row=1, column=0)
+        tk.Label(self.root, text="Text", bg="yellow").grid(row=0, column=0)
+        tk.Label(self.root, text="Dateiname", bg="yellow").grid(row=1, column=0)
 
-        self.tentry = Entry(self.root)
-        self.nentry = Entry(self.root)
+        self.tentry = tk.Entry(self.root)
+        self.nentry = tk.Entry(self.root)
 
         self.tentry.grid(row=0, column=1)
         self.nentry.grid(row=1, column=1)
@@ -23,7 +26,7 @@ class Gui:
         self.root.mainloop()
 
     def __menu (self):
-        self.menu = Menu (self.root)
+        self.menu = tk.Menu (self.root)
         self.root.config (menu=self.menu)
         self.menu.add_command(label="Schreiben", command=self.__write)
         self.menu.add_command(label="Lesen", command=self.__read)
@@ -34,23 +37,26 @@ class Gui:
         text = self.tentry.get()
         name = self.nentry.get()
         if name == '': name = 'code.hfc'
+        print(text, name)
         huff = HuffCode()
         huff.write(text, name)
-        a = Tk()
-        Message(a, text="Wurde nach " + name + " geschrieben.").pack()
+        a = tk.Tk()
+        tk.Message(a, text="Wurde nach " + name + " geschrieben.").pack()
         a.mainloop()
 
     def __read (self):
         name = self.nentry.get()
         if name == '': name = 'code.hfc'
-        self.tentry.delete(0,END)
+        if int(sys.version[0]) < 3: self.tentry.delete (0, END)
+        else: self.tentry.delete(0, len(self.tentry.get())-1)
         self.tentry.insert(0, "lese ...")
         huff = HuffCode()
         text = huff.read(name)
-        self.tentry.delete(0, END)
+        if int(sys.version[0]) < 3: self.tentry.delete(0, END)
+        else: self.tentry.delete(0, len(self.tentry.get())-1)
         self.tentry.insert(0, text)
-        a = Tk()
-        Message(a, text="Wurde von " + name + " gelesen.\nErgebnis: " + text).pack()
+        a = tk.Tk()
+        tk.Message(a, text="Wurde von " + name + " gelesen.\nErgebnis: " + text).pack()
         a.mainloop()
 
 gui = Gui()
